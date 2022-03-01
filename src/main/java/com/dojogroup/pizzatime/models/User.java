@@ -41,6 +41,8 @@ public class User {
 	@Transient
 	private String passwordConfirmation;
 	@OneToMany(mappedBy="user",fetch=FetchType.LAZY)
+	private List<Order> orders;
+	@OneToMany(mappedBy="favoritedBy",fetch=FetchType.LAZY)
 	private List<Order> favoriteOrders;
 	@Column(updatable = false)
 	private Date createdAt;
@@ -135,6 +137,14 @@ public class User {
 		this.passwordConfirmation = passwordConfirmation;
 	}
 
+	public List<Order> getOrders() {
+		return orders;
+	}
+
+	public void setOrders(List<Order> orders) {
+		this.orders = orders;
+	}
+	
 	public List<Order> getFavoriteOrders() {
 		return favoriteOrders;
 	}
