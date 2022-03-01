@@ -34,6 +34,9 @@ public class Order {
 	@NotBlank
 	private Long qty;
 	private String toppings;
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="favoritedBy_id")
+	private User favoritedBy;
 	@Column(updatable = false)
 	private Date createdAt;
 	private Date updatedAt;
