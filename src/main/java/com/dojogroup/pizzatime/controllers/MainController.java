@@ -19,6 +19,7 @@ import com.dojogroup.pizzatime.services.*;
 public class MainController {
 	@Autowired
 	private UserService userService;
+	private OrderService oService;
 	
 	//Landing page redirects to /home or /authentication
 	@RequestMapping("/")
@@ -89,10 +90,24 @@ public class MainController {
 		return "redirect:/";
 	}
 
-//	@RequestMapping("/home")
-//	
-//	@RequestMapping("/account")
-//	
+	@GetMapping("/home")
+	public List<Order> dashboard(HttpSession session) {
+		//needs to give:
+			//most common order, new pizza button, a randomiser
+			session.setAttribute("favorite", userService.findByEmail(email).getFavoriteOrders());
+
+			return "redirect:/home";
+
+		
+	}
+
+//	@RequestMapping("/account/{id}")
+	public String account(@PathVariable("id") Long id) {
+		this.userService.findUserById(id);
+		this.oRepo.findById(id);
+		return "account.jsp";
+	
+}
 //	@RequestMapping("/order")
 //	
 //	@RequestMapping("/checkout")
