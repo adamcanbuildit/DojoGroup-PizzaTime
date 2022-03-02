@@ -91,7 +91,7 @@ public class MainController {
 	}
 
 	@GetMapping("/home")
-	public List<Order> dashboard(HttpSession session) {
+	public String dashboard(HttpSession session) {
 		//needs to give:
 			//most common order, new pizza button, a randomiser
 			session.setAttribute("favorite", userService.findByEmail(email).getFavoriteOrders());
@@ -101,15 +101,23 @@ public class MainController {
 		
 	}
 
-//	@RequestMapping("/account/{id}")
+	@RequestMapping("/account/{id}")
 	public String account(@PathVariable("id") Long id) {
 		this.userService.findUserById(id);
-		this.oService.getAllOrderByUser(id);
+		this.oService.getAllOrdersByUser(id);
 		return "account.jsp";
-	
-}
-//	@RequestMapping("/order")
-//	
-//	@RequestMapping("/checkout")
+	}
+
+	@RequestMapping("/order")
+	public String order(Model model, @Valid @ModelAttribute("order") Order order, BindingResult result, HttpSession session) {
+		this.oService.createOrder(order);
+		return "redirect:/home";
+	}
+
+	@RequestMapping("/checkout")
+	public String checkout(@RequestParam("email") String email, Order order, HttpSession session) {
+		this.oService.getOneOrder(email);
+		return "checkout.jsp";
+	}
 
 }
