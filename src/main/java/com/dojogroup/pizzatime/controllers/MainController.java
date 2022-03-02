@@ -7,7 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -91,25 +94,67 @@ public class MainController {
 	}
 
 	@GetMapping("/home")
-	public List<Order> dashboard(HttpSession session) {
+	public String dashboard(HttpSession session) {
 		//needs to give:
 			//most common order, new pizza button, a randomiser
-			session.setAttribute("favorite", userService.findByEmail(email).getFavoriteOrders());
+			//session.setAttribute("favorite", userService.findByEmail(email).getFavoriteOrders());
 			//randomiser goes here
-			return "home.jsp";
+			return "Home.jsp";
 
 		
 	}
 
-//	@RequestMapping("/account/{id}")
+	@RequestMapping("/account/{id}")
 	public String account(@PathVariable("id") Long id) {
-		this.userService.findUserById(id);
-		this.oService.getAllOrderByUser(id);
+		this.userService.getAllOrdersByUser(id);
 		return "account.jsp";
+	}
 	
-}
-//	@RequestMapping("/order")
-//	
+	//POST - Favorite an Order
+	@PostMapping("/favorite/{id}")
+	public String favoriteAnOrder(@PathVariable("id") Long orderId, HttpSession session) {
+		// get user from session, save them in the model and return requested page
+		// if no user, return to login
+		Long currentUserId = (Long) session.getAttribute("userId");
+		if (currentUserId == null) {
+			return "redirect:/";
+		} else {
+			User user = userService.findUserById(currentUserId);
+			Order order = oService.getOneOrder(currentUserId);
+			userService.favoriteOrderById(user,order);
+			return "redirect:/account/" + currentUserId;
+		}
+	}
+	
+	// GET - Create Order
+	@RequestMapping("/order")
+	public String orderForm(Model model, HttpSession session) {
+		// get user from session, save them in the model and return requested page
+		// if no user, return to login
+		Long currentUserId = (Long) session.getAttribute("userId");
+		if (currentUserId == null) {
+			return "redirect:/";
+		} else {
+			model.addAttribute("user", userService.findUserById(currentUserId));
+			model.addAttribute("order", new Order());
+			return "CreateOrder.jsp";
+		}
+	}
+	// POST - Create Order
+	@PostMapping("/createorder")
+	public String createOrder(Model model, HttpSession session, @Valid @ModelAttribute("order") Order order, BindingResult result) {
+		// get user from session, save them in the model and return requested page
+		// if no user, return to login
+		Long currentUserId = (Long) session.getAttribute("userId");
+		if (currentUserId == null) {
+			return "redirect:/";
+		} else {
+			// .createOrder returns the order so it is added to session
+			session.setAttribute("currentOrder", oService.createOrder(order));
+			return "redirect:/checkout";
+		}
+	}
+	
 //	@RequestMapping("/checkout")
 
 }

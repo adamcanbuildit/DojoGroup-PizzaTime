@@ -35,7 +35,6 @@ public class Order {
 	private String crustType;
 	@NotBlank
 	private Long qty;
-	//private List<String> toppings;
 	@ElementCollection(targetClass=String.class)
 	private List<String> toppings;
 	@ManyToOne(fetch=FetchType.LAZY)
