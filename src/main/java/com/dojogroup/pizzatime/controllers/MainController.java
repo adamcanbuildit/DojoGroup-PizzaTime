@@ -95,8 +95,8 @@ public class MainController {
 		//needs to give:
 			//most common order, new pizza button, a randomiser
 			session.setAttribute("favorite", userService.findByEmail(email).getFavoriteOrders());
-
-			return "redirect:/home";
+			//randomiser goes here
+			return "home.jsp";
 
 		
 	}
@@ -104,7 +104,7 @@ public class MainController {
 //	@RequestMapping("/account/{id}")
 	public String account(@PathVariable("id") Long id) {
 		this.userService.findUserById(id);
-		this.oRepo.findById(id);
+		this.oService.getAllOrderByUser(id);
 		return "account.jsp";
 	
 }

@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -15,6 +16,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
 @Table(name="orders")
@@ -33,7 +35,9 @@ public class Order {
 	private String crustType;
 	@NotBlank
 	private Long qty;
-	private String toppings;
+	//private List<String> toppings;
+	@ElementCollection(targetClass=String.class)
+	private List<String> toppings;
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="favoritedBy_id")
 	private User favoritedBy;
@@ -47,7 +51,7 @@ public class Order {
 		super();
 		}
 	public Order(User user, @NotBlank String deliveryMethod, @NotBlank String pizzaSize, @NotBlank String crustType,
-			@NotBlank Long qty, String toppings) {
+			@NotEmpty Long qty, List<String> toppings) {
 		super();
 		this.user = user;
 		this.deliveryMethod = deliveryMethod;
@@ -94,10 +98,10 @@ public class Order {
 	public void setQty(Long qty) {
 		this.qty = qty;
 	}
-	public String getToppings() {
+	public List<String> getToppings() {
 		return toppings;
 	}
-	public void setToppings(String toppings) {
+	public void setToppings(List<String> toppings) {
 		this.toppings = toppings;
 	}
 	public Date getCreatedAt() {

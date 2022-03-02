@@ -5,12 +5,15 @@ import java.util.Optional;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
+import main.java.com.dojogroup.pizzatime.repositories.OrderRepository;
+
 import com.dojogroup.pizzatime.models.*;
 import com.dojogroup.pizzatime.repositories.UserRepository;
 
 @Service
 public class UserService {
 	private final UserRepository userRepo;
+    private OrderRepository oRepo;
 	public UserService(UserRepository userRepo) {
         this.userRepo = userRepo;
     }
@@ -51,4 +54,10 @@ public class UserService {
             }
         }
     }
+
+    public List<Order> getAllOrdersByUser(Long id, OrderRepository oRepo) {
+        User user=userRepo.findUserById(id);
+        oRepo.findById(id);
+    }
+
 }
