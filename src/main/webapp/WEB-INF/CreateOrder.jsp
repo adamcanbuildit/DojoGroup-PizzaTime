@@ -55,9 +55,9 @@
 			<fieldset>
 				<legend>Toppings:</legend>
 				Extra Cheese <form:checkbox path="toppings" value="extra cheese"/>
-				Pepperoni <form:checkbox path="toppings" value="pepperoni"/>
-				Mushrooms <form:checkbox path="toppings" value="mushrooms"/>
-				Peppers <form:checkbox path="toppings" value="peppers"/>
+				| Pepperoni <form:checkbox path="toppings" value="pepperoni"/>
+				| Mushrooms <form:checkbox path="toppings" value="mushrooms"/>
+				| Peppers <form:checkbox path="toppings" value="peppers"/>
 			</fieldset>
 			<form:input type="hidden" path="user" value="${user}" />
 			<input type="submit" form="order-form" value="Add to Order" />
