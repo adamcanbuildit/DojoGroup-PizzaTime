@@ -12,7 +12,6 @@ import com.dojogroup.pizzatime.repositories.*;
 @Service
 public class UserService {
 	private final UserRepository userRepo;
-    private OrderRepository oRepo;
 	public UserService(UserRepository userRepo) {
         this.userRepo = userRepo;
     }

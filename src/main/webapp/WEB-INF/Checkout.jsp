@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Home</title>
+<title>Checkout</title>
 </head>
 <body>
 	<div id="navbar">
@@ -16,10 +16,6 @@
 		<a href="/account/${userId}">Account</a>
 	</div>
 	
-	<h2>Quick Options</h2>
-	<a href="/order">Order</a>
-	<a href="/order">Re-Order My Fave</a>
-	<a href="/order">Surprise Me</a>
 	
 </body>
 </html>

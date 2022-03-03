@@ -10,7 +10,7 @@
 </head>
 <body>
 	<div id="navbar">
-		<a href="/order">Home</a>
+		<a href="/home">Home</a>
 		<a href="/order">Order</a>
 		<a href="/logout">Logout</a>
 		<a href="/account/${userId}">Account</a>
@@ -53,8 +53,26 @@
 	</form:form>
 	
 	<h2>Past Orders</h2>
-	
-	
+	<h3>Favorite Orders</h3>
+		<c:forEach var="order" items="${favoriteOrders}">
+			<p><c:out value="${order.createdAt}" /></p>
+			<p>
+				<c:out value="${order.crustType} - " />
+				<c:forEach var="topping" items="${order.toppings}">
+					<c:out value="${topping}, " />
+				</c:forEach>
+			</p>
+		</c:forEach>
+	<h3>Past Orders</h3>
+		<c:forEach var="order" items="${pastOrders}">
+			<p><c:out value="${order.createdAt}" /></p>
+			<p>
+				<c:out value="${order.crustType} - " />
+				<c:forEach var="topping" items="${order.toppings}">
+					<c:out value="${topping}, " />
+				</c:forEach>
+			</p>
+		</c:forEach>
 	
 </body>
 </html>
