@@ -9,6 +9,6 @@
 <title>Home</title>
 </head>
 <body>
-
+	<a href="/order">Create an order</a>
 </body>
 </html>

@@ -101,8 +101,6 @@ public class MainController {
 			//session.setAttribute("favorite", userService.findByEmail(email).getFavoriteOrders());
 			//randomiser goes here
 			return "Home.jsp";
-
-		
 	}
 
 	@RequestMapping("/account/{id}")
@@ -152,11 +150,20 @@ public class MainController {
 		} else {
 			// add currentOrder to session
 			Order currentOrder = oService.createOrder(order); 
-			session.setAttribute("currentOrder", currentOrder);
-			return "redirect:/checkout";
+			return "redirect:/checkout/"+currentOrder.getId();
 		}
 	}
 	
-//	@RequestMapping("/checkout")
-
+	// GET - Checkout
+//	@RequestMapping("/checkout/{id}")
+//	public String checkoutPage(Model model, @PathVariable("id") Long orderId, HttpSession session) {
+//		// get user from session, save them in the model and return requested page
+//		// if no user, return to login
+//		Long currentUserId = (Long) session.getAttribute("userId");
+//		if (currentUserId == null) {
+//			return "redirect:/";
+//		} else {
+//			Order currentOrder = oService.getOneOrder(orderId);
+//		}
+//	}
 }
