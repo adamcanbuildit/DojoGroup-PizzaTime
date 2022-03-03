@@ -11,7 +11,7 @@ import com.dojogroup.pizzatime.repositories.OrderRepository;
 @Service
 public class OrderService {
 	@Autowired
-	private OrderRepository oRepo;
+	private final OrderRepository oRepo;
 
 	public OrderService(OrderRepository repository) {
 		this.oRepo = repository;
@@ -30,7 +30,7 @@ public class OrderService {
 	}
 
 	public Order editOrder(Order Order) {
-		return this.oRepo.save(Order);
+		return oRepo.save(Order);
 	}
 
 	public String deleteOrder(Long id) {

@@ -33,7 +33,6 @@ public class Order {
 	private String pizzaSize;
 	@NotBlank
 	private String crustType;
-	@NotBlank
 	private Long qty;
 	@ElementCollection(targetClass=String.class)
 	private List<String> toppings;

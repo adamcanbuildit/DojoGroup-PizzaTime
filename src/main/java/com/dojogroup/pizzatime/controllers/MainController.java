@@ -22,6 +22,7 @@ import com.dojogroup.pizzatime.services.*;
 public class MainController {
 	@Autowired
 	private UserService userService;
+	@Autowired
 	private OrderService oService;
 	
 	//Landing page redirects to /home or /authentication
@@ -128,7 +129,7 @@ public class MainController {
 	
 	// GET - Create Order
 	@RequestMapping("/order")
-	public String orderForm(Model model, HttpSession session) {
+	public String orderForm(@ModelAttribute("order") Order order, Model model, HttpSession session) {
 		// get user from session, save them in the model and return requested page
 		// if no user, return to login
 		Long currentUserId = (Long) session.getAttribute("userId");
@@ -149,8 +150,9 @@ public class MainController {
 		if (currentUserId == null) {
 			return "redirect:/";
 		} else {
-			// .createOrder returns the order so it is added to session
-			session.setAttribute("currentOrder", oService.createOrder(order));
+			// add currentOrder to session
+			Order currentOrder = oService.createOrder(order); 
+			session.setAttribute("currentOrder", currentOrder);
 			return "redirect:/checkout";
 		}
 	}
