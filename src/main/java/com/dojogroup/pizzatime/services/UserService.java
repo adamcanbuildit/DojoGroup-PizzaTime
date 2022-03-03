@@ -77,5 +77,11 @@ public class UserService {
     		System.out.println(user.getFavoriteOrders());
     	}
     }
+    
+    public void editUserById(Long userId, User user) {
+    	User userToUpdate = userRepo.findById(userId).get();
+    	userToUpdate = user;
+    	userRepo.save(userToUpdate);
+    }
 
 }

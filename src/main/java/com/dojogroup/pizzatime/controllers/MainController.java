@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -138,6 +139,23 @@ public class MainController {
 			model.addAttribute("pastOrders", pastOrders);
 			model.addAttribute("favoriteOrders", favoriteOrders);
 			return "Account.jsp";
+		}
+	}
+	
+	// PUT - Edit Account
+	@PutMapping("/editaccount/{id}")
+	public String editAccount(HttpSession session, 
+			@PathVariable("id") Long userId,
+			@Valid @ModelAttribute("user") User user,
+			BindingResult result) {
+		// get user from session, save them in the model and return requested page
+		// if no user, return to login
+		Long currentUserId = (Long) session.getAttribute("userId");
+		if (currentUserId == null) {
+			return "redirect:/";
+		} else {
+			userService.editUserById(currentUserId,user);
+			return "redirect:/account/"+currentUserId;
 		}
 	}
 	
