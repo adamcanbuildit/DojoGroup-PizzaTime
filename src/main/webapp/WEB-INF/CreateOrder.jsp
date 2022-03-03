@@ -11,7 +11,6 @@
 <body>
 	<div>
 		<h1>Craft-A-Pizza</h1>
-		<p><c:out value="${order_error}" /></p>
 		<form:form method="POST" action="/createorder" modelAttribute="order" id="order-form">
 			<p>
 				<form:label path="deliveryMethod">Delivery Method:</form:label>
