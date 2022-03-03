@@ -9,6 +9,17 @@
 <title>Home</title>
 </head>
 <body>
-	<a href="/order">Create an order</a>
+	<div id="navbar">
+		<a href="/order">Home</a>
+		<a href="/order">Order</a>
+		<a href="/logout">Logout</a>
+		<a href="/account/${userId}">Account</a>
+	</div>
+	
+	<h2>Quick Options</h2>
+	<a href="/order">Order</a>
+	<a href="/order">Re-Order My Fave</a>
+	<a href="/order">Surprise Me</a>
+	
 </body>
 </html>
