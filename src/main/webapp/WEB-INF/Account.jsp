@@ -62,6 +62,7 @@
 					<c:out value="${topping}, " />
 				</c:forEach>
 			</p>
+			<p><a href="/favorite/${order.id}">unfavorite</a></p>
 		</c:forEach>
 	<h3>Past Orders</h3>
 		<c:forEach var="order" items="${pastOrders}">
@@ -72,6 +73,7 @@
 					<c:out value="${topping}, " />
 				</c:forEach>
 			</p>
+			<p><a href="/favorite/${order.id}">make favorite</a></p>
 		</c:forEach>
 	
 </body>
