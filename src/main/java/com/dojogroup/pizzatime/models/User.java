@@ -49,7 +49,7 @@ public class User {
 	private Date updatedAt;
 	
 	//Constructor
-	
+	public User() {}
 	public User(@NotBlank String firstName, @NotBlank String lastName, @NotBlank @Email String email,
 			@NotBlank String address, @NotBlank String city, @NotBlank String state, @NotBlank String password,
 			String passwordConfirmation) {
