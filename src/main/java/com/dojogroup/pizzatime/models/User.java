@@ -16,6 +16,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name="users")
@@ -28,7 +29,7 @@ public class User {
 	@NotBlank
 	private String lastName;
 	@NotBlank
-	@Email
+	@Email(message="Must submit a valid email")
 	private String email;
 	@NotBlank
 	private String address;
@@ -36,7 +37,7 @@ public class User {
 	private String city;
 	@NotBlank
 	private String state;
-	@NotBlank
+	@Size(min=8, max=16, message="Please submit a password of 8-16 characters")
 	private String password;
 	@Transient
 	private String passwordConfirmation;
@@ -63,6 +64,8 @@ public class User {
 		this.password = password;
 		this.passwordConfirmation = passwordConfirmation;
 	}
+
+
 
 	
 	//Getters & Setters

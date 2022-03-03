@@ -11,6 +11,7 @@ import com.dojogroup.pizzatime.repositories.UserRepository;
 public class UserService {
 	private final UserRepository userRepo;
     private OrderService oService;
+    private UserValidator uValid;
 	public UserService(UserRepository userRepo) {
         this.userRepo = userRepo;
     }
@@ -64,6 +65,10 @@ public class UserService {
         } else {
             return null;
         }
+    }
+
+    public void validate(User user) {
+        this.uValid.validate(user, null);
     }
 
 

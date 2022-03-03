@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +24,7 @@ public class MainController {
 	@Autowired
 	private UserService userService;
 	private OrderService oService;
+	private UserValidator uValid;
 	
 	//Landing page redirects to /home or /authentication
 	@RequestMapping("/")
@@ -69,6 +71,22 @@ public class MainController {
 			return "redirect:/home";
 		}
 	}
+
+	public void Users(UserService userService, UserValidator userValidator) {
+        this.userService = userService;
+        this.uValid = userValidator;
+    }
+        
+    @RequestMapping(value="/registration", method=RequestMethod.POST)
+    public String registerUser(@Valid @ModelAttribute("user") User user, BindingResult result, HttpSession session) {
+        uValid.validate(user, result);
+        if(result.hasErrors()) {
+            return "registrationPage.jsp";
+        }
+        User u = userService.registerUser(user);
+        session.setAttribute("userId", u.getId());
+        return "redirect:/home";
+    }
 
 	// POST -  Login User
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -131,21 +149,22 @@ public class MainController {
 		return "redirect:/home";
 	}
 
-	// GET - Create Order
+// GET - Create Order
     @RequestMapping("/order")
-    public String orderForm(Model model, HttpSession session) {
+    public String orderForm(@ModelAttribute("order") Order order, Model model, HttpSession session) {
         // get user from session, save them in the model and return requested page
         // if no user, return to login
         Long currentUserId = (Long) session.getAttribute("userId");
         if (currentUserId == null) {
             return "redirect:/";
         } else {
+            model.addAttribute("userId", currentUserId);
             model.addAttribute("user", userService.findUserById(currentUserId));
             model.addAttribute("order", new Order());
             return "CreateOrder.jsp";
         }
     }
-
+    // POST - Create Order
     @PostMapping("/createorder")
     public String createOrder(Model model, HttpSession session, @Valid @ModelAttribute("order") Order order, BindingResult result) {
         // get user from session, save them in the model and return requested page
@@ -154,16 +173,30 @@ public class MainController {
         if (currentUserId == null) {
             return "redirect:/";
         } else {
-            // .createOrder returns the order so it is added to session
-            session.setAttribute("currentOrder", oService.createOrder(order));
-            return "redirect:/checkout";
+            // add currentOrder to session
+            Order currentOrder = oService.createOrder(order); 
+            return "redirect:/checkout/"+currentOrder.getId();
         }
     }
 
-	@RequestMapping("/checkout")
-	public String checkout(@RequestParam("email") Long id, Order order, HttpSession session) {
-		this.oService.getOneOrder(id);
-		return "checkout.jsp";
+    // GET - Checkout
+   @RequestMapping("/checkout/{id}")
+   public String checkoutPage(Model model, @PathVariable("id") Long orderId, HttpSession session) {
+       // get user from session, save them in the model and return requested page
+       // if no user, return to login
+        Long currentUserId = (Long) session.getAttribute("userId");
+        if (currentUserId == null) {
+            return "redirect:/";
+        } else {
+            Order currentOrder = oService.getOneOrder(orderId);
+			return "redirect:/checkout";
+        }
+    }
+	@DeleteMapping("/checkout/{id}/delete")
+	public String deleteOrder(@PathVariable("id") Long id) {
+		this.oService.deleteOrder(id);
+		return "redirect:/home";
 	}
 
+	
 }
