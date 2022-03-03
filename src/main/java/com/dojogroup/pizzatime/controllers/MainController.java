@@ -1,5 +1,7 @@
 package com.dojogroup.pizzatime.controllers;
 
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -95,18 +97,44 @@ public class MainController {
 	}
 
 	@GetMapping("/home")
-	public String dashboard(HttpSession session) {
-		//needs to give:
-			//most common order, new pizza button, a randomiser
-			//session.setAttribute("favorite", userService.findByEmail(email).getFavoriteOrders());
-			//randomiser goes here
+	public String dashboard(Model model, HttpSession session) {
+		// get user from session, save them in the model and return requested page
+		// if no user, return to login
+		Long currentUserId = (Long) session.getAttribute("userId");
+		if (currentUserId == null) {
+			return "redirect:/";
+		} else {
+			model.addAttribute("userId", currentUserId);
+			model.addAttribute("favoriteOrders", userService.findUserById(currentUserId).getFavoriteOrders());
 			return "Home.jsp";
+			//needs to give:
+			//most common order, new pizza button, a randomiser
+			//randomiser goes here
+		}
 	}
 
 	@RequestMapping("/account/{id}")
-	public String account(@PathVariable("id") Long id) {
-		this.userService.getAllOrdersByUser(id);
-		return "account.jsp";
+	public String account(Model model, HttpSession session, @PathVariable("id") Long id) {
+		// get user from session, save them in the model and return requested page
+		// if no user, return to login
+		Long currentUserId = (Long) session.getAttribute("userId");
+		if (currentUserId == null) {
+			return "redirect:/";
+		} else {
+			model.addAttribute("userId", currentUserId);
+			// get past orders and favorite orders
+			List<Order> pastOrders = userService.getAllOrdersByUser(id);
+			List<Order> favoriteOrders = userService.findUserById(id).getFavoriteOrders();
+			// remove the favorites from the order list to make displaying them on .jsp easier
+			for (Order order : favoriteOrders) {
+				pastOrders.remove(order);
+			}
+			// add the two order lists to the model to be displayed
+			model.addAttribute("user", userService.findUserById(currentUserId));
+			model.addAttribute("pastOrders", pastOrders);
+			model.addAttribute("favoriteOrders", favoriteOrders);
+			return "Account.jsp";
+		}
 	}
 	
 	//POST - Favorite an Order
@@ -134,6 +162,7 @@ public class MainController {
 		if (currentUserId == null) {
 			return "redirect:/";
 		} else {
+			model.addAttribute("userId", currentUserId);
 			model.addAttribute("user", userService.findUserById(currentUserId));
 			model.addAttribute("order", new Order());
 			return "CreateOrder.jsp";
