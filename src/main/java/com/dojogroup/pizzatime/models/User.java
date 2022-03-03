@@ -41,7 +41,7 @@ public class User {
 	@Transient
 	private String passwordConfirmation;
 	@OneToMany(mappedBy="user",fetch=FetchType.LAZY)
-	private List<Order> orders;
+	public List<Order> orders;
 	@OneToMany(mappedBy="favoritedBy",fetch=FetchType.LAZY)
 	private List<Order> favoriteOrders;
 	@Column(updatable = false)

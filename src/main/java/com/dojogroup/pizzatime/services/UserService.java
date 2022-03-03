@@ -1,19 +1,16 @@
 package com.dojogroup.pizzatime.services;
 
 import java.util.Optional;
-
+import java.util.List;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
-
-import main.java.com.dojogroup.pizzatime.repositories.OrderRepository;
-
 import com.dojogroup.pizzatime.models.*;
 import com.dojogroup.pizzatime.repositories.UserRepository;
 
 @Service
 public class UserService {
 	private final UserRepository userRepo;
-    private OrderRepository oRepo;
+    private OrderService oService;
 	public UserService(UserRepository userRepo) {
         this.userRepo = userRepo;
     }
@@ -51,13 +48,24 @@ public class UserService {
                 return true;
             } else {
                 return false;
-            }
+            }}}
+    
+
+    public List<Order> getAllOrdersByUser(Long id, String email) {
+        List<Order> allOrders = userRepo.findByEmail(email).orders;
+        return allOrders;
+        
+    }
+
+    public Order favoriteOrderById(User user, Order order, Long id) {
+        if(order.favoritedBy == user) {
+            oService.getOneOrder(id);
+            return order;
+        } else {
+            return null;
         }
     }
 
-    public List<Order> getAllOrdersByUser(Long id, OrderRepository oRepo) {
-        User user=userRepo.findUserById(id);
-        oRepo.findById(id);
-    }
+
 
 }
