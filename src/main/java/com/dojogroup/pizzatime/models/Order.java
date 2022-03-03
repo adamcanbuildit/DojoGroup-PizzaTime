@@ -38,9 +38,10 @@ public class Order {
 	//private List<String> toppings;
 	@ElementCollection(targetClass=String.class)
 	private List<String> toppings;
+	private List<Order> orders;
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="favoritedBy_id")
-	private User favoritedBy;
+	public User favoritedBy;
 	@Column(updatable = false)
 	private Date createdAt;
 	private Date updatedAt;
@@ -70,6 +71,12 @@ public class Order {
 	}
 	public User getUser() {
 		return user;
+	}
+	public List<Order> getOrders() {
+		return orders;
+	}
+	public void setOrders(List<Order> orders) {
+		this.orders = orders;
 	}
 	public void setUser(User user) {
 		this.user = user;

@@ -10,7 +10,9 @@ import com.dojogroup.pizzatime.models.User;
 @Repository
 public interface UserRepository extends CrudRepository<User, Long>{
 	
+	Object orders = null;
 	List<User> findAll();
 	
 	User findByEmail(String email);
+	User findUserById(Long id);
 }

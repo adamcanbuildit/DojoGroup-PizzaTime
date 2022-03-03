@@ -7,7 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -91,32 +94,75 @@ public class MainController {
 	}
 
 	@GetMapping("/home")
-	public String dashboard(HttpSession session) {
+	public String dashboard(HttpSession session, String email) {
 		//needs to give:
 			//most common order, new pizza button, a randomiser
 			session.setAttribute("favorite", userService.findByEmail(email).getFavoriteOrders());
 			//randomiser goes here
 			return "home.jsp";
-
-		
 	}
 
-	@RequestMapping("/account/{id}")
-	public String account(@PathVariable("id") Long id) {
+	//POST - Favorite an Order
+    @PostMapping("/favorite/{id}")
+    public String favoriteAnOrder(@PathVariable("id") Long orderId, HttpSession session) {
+        // get user from session, save them in the model and return requested page
+        // if no user, return to login
+        Long currentUserId = (Long) session.getAttribute("userId");
+        if (currentUserId == null) {
+            return "redirect:/";
+        } else {
+            User user = userService.findUserById(currentUserId);
+            Order order = oService.getOneOrder(currentUserId);
+            userService.favoriteOrderById(user,order, currentUserId);
+            return "redirect:/account/" + currentUserId;
+        }
+    }
+
+	@GetMapping("/account/{id}")
+	public String account(@PathVariable("id") Long id, String email) {
 		this.userService.findUserById(id);
-		this.oService.getAllOrdersByUser(id);
+		this.oService.getAllOrdersByUser(id, email);
 		return "account.jsp";
 	}
 
-	@RequestMapping("/order")
-	public String order(Model model, @Valid @ModelAttribute("order") Order order, BindingResult result, HttpSession session) {
+	@PostMapping("/order/{id}")
+	public String order(Model model, @Valid @ModelAttribute("order") Order order, BindingResult result, HttpSession session, @PathVariable("id") Long id) {
 		this.oService.createOrder(order);
 		return "redirect:/home";
 	}
 
+	// GET - Create Order
+    @RequestMapping("/order")
+    public String orderForm(Model model, HttpSession session) {
+        // get user from session, save them in the model and return requested page
+        // if no user, return to login
+        Long currentUserId = (Long) session.getAttribute("userId");
+        if (currentUserId == null) {
+            return "redirect:/";
+        } else {
+            model.addAttribute("user", userService.findUserById(currentUserId));
+            model.addAttribute("order", new Order());
+            return "CreateOrder.jsp";
+        }
+    }
+
+    @PostMapping("/createorder")
+    public String createOrder(Model model, HttpSession session, @Valid @ModelAttribute("order") Order order, BindingResult result) {
+        // get user from session, save them in the model and return requested page
+        // if no user, return to login
+        Long currentUserId = (Long) session.getAttribute("userId");
+        if (currentUserId == null) {
+            return "redirect:/";
+        } else {
+            // .createOrder returns the order so it is added to session
+            session.setAttribute("currentOrder", oService.createOrder(order));
+            return "redirect:/checkout";
+        }
+    }
+
 	@RequestMapping("/checkout")
-	public String checkout(@RequestParam("email") String email, Order order, HttpSession session) {
-		this.oService.getOneOrder(email);
+	public String checkout(@RequestParam("email") Long id, Order order, HttpSession session) {
+		this.oService.getOneOrder(id);
 		return "checkout.jsp";
 	}
 
