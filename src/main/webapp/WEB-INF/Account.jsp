@@ -17,7 +17,7 @@
 	</div>
 	
 	<h2>Account Info</h2>
-	<form:form method="POST" action="/editaccount" modelAttribute="user" id="edit-form">
+	<form:form method="POST" action="/editaccount/${userId}" modelAttribute="user" id="edit-form">
 		<input type="hidden" name="_method" value="put">
 		<p>
 			<form:label path="firstName">First Name:</form:label>
