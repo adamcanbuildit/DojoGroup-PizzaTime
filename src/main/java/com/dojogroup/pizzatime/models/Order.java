@@ -18,6 +18,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 @Entity
 @Table(name="orders")
 public class Order {
@@ -33,9 +35,7 @@ public class Order {
 	private String pizzaSize;
 	@NotBlank
 	private String crustType;
-	@NotBlank
 	private Long qty;
-	//private List<String> toppings;
 	@ElementCollection(targetClass=String.class)
 	private List<String> toppings;
 	private List<Order> orders;
@@ -43,7 +43,9 @@ public class Order {
 	@JoinColumn(name="favoritedBy_id")
 	public User favoritedBy;
 	@Column(updatable = false)
+	@DateTimeFormat(pattern="MM-dd-yyyy")
 	private Date createdAt;
+	@DateTimeFormat(pattern="MM-dd-yyyy")
 	private Date updatedAt;
 	
 	

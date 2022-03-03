@@ -1,11 +1,12 @@
 package com.dojogroup.pizzatime.services;
 
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
+
 import com.dojogroup.pizzatime.models.*;
-import com.dojogroup.pizzatime.repositories.UserRepository;
+import com.dojogroup.pizzatime.repositories.*;
 
 @Service
 public class UserService {
@@ -69,6 +70,22 @@ public class UserService {
 
     public void validate(User user) {
         this.uValid.validate(user, null);
+    }
+    
+    public List<Order> getAllOrdersByUser(Long id) {
+        User user = userRepo.findById(id).get();
+        return user.getOrders();
+    }
+    
+    public void favoriteOrderById(User user, Order order) {
+    	List<Order> favorites = (List<Order>) user.getFavoriteOrders();
+    	if(favorites.contains(order)) {
+    		return;
+    	} else {
+    		favorites.add(order);
+    		user.setFavoriteOrders(favorites);
+    		return;
+    	}
     }
 
 
