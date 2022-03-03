@@ -113,6 +113,7 @@ public class MainController {
 		}
 	}
 
+	// GET - View Account details
 	@RequestMapping("/account/{id}")
 	public String account(Model model, HttpSession session, @PathVariable("id") Long id) {
 		// get user from session, save them in the model and return requested page

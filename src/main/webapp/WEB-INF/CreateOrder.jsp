@@ -9,6 +9,12 @@
 <title>Craft A Pizza</title>
 </head>
 <body>
+	<div id="navbar">
+		<a href="/home">Home</a>
+		<a href="/order">Order</a>
+		<a href="/logout">Logout</a>
+		<a href="/account/${userId}">Account</a>
+	</div>
 	<div>
 		<h1>Craft-A-Pizza</h1>
 		<form:form method="POST" action="/createorder" modelAttribute="order" id="order-form">
@@ -58,7 +64,7 @@
 				| Mushrooms <form:checkbox path="toppings" value="mushrooms"/>
 				| Peppers <form:checkbox path="toppings" value="peppers"/>
 			</fieldset>
-			<form:input type="hidden" path="user" value="${user}" />
+			<form:input type="hidden" path="user" value="${userId}" />
 			<input type="submit" form="order-form" value="Add to Order" />
 		</form:form>
 	</div>
