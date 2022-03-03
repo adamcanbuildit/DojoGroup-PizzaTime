@@ -17,7 +17,7 @@
 	</div>
 	
 	<h2>Account Info</h2>
-	<form:form method="POST" action="/editaccount" modelAttribute="user" id="edit-form">
+	<form:form method="POST" action="/editaccount/${userId}" modelAttribute="user" id="edit-form">
 		<input type="hidden" name="_method" value="put">
 		<p>
 			<form:label path="firstName">First Name:</form:label>
@@ -62,6 +62,7 @@
 					<c:out value="${topping}, " />
 				</c:forEach>
 			</p>
+			<p><a href="/favorite/${order.id}">unfavorite</a></p>
 		</c:forEach>
 	<h3>Past Orders</h3>
 		<c:forEach var="order" items="${pastOrders}">
@@ -72,6 +73,7 @@
 					<c:out value="${topping}, " />
 				</c:forEach>
 			</p>
+			<p><a href="/favorite/${order.id}">make favorite</a></p>
 		</c:forEach>
 	
 </body>

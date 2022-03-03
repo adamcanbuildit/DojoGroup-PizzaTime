@@ -11,10 +11,16 @@ import com.dojogroup.pizzatime.repositories.*;
 @Service
 public class UserService {
 	private final UserRepository userRepo;
+<<<<<<< HEAD
     private OrderService oService;
     private UserValidator uValid;
 	public UserService(UserRepository userRepo) {
+=======
+	private final OrderRepository orderRepo;
+	public UserService(UserRepository userRepo, OrderRepository orderRepo) {
+>>>>>>> main
         this.userRepo = userRepo;
+        this.orderRepo = orderRepo;
     }
 	
 	// Register user and hash their password
@@ -77,15 +83,28 @@ public class UserService {
         return user.getOrders();
     }
     
-    public void favoriteOrderById(User user, Order order) {
-    	List<Order> favorites = (List<Order>) user.getFavoriteOrders();
-    	if(favorites.contains(order)) {
-    		return;
+    public void favoriteOrderById(Long userId, Long orderId) {
+    	User user = userRepo.findById(userId).get();
+		Order order = orderRepo.findById(orderId).get();
+    	if(user.getFavoriteOrders().contains(order)) {
+    		user.getFavoriteOrders().remove(order);
+    		userRepo.save(user);
     	} else {
-    		favorites.add(order);
-    		user.setFavoriteOrders(favorites);
-    		return;
+    		System.out.println("2");
+    		System.out.println(user.getFirstName());
+    		System.out.println(user.getFavoriteOrders());
+    		System.out.println(order);
+    		user.getFavoriteOrders().add(order);
+    		System.out.println(user.getFavoriteOrders());
+    		userRepo.save(user);
+    		System.out.println(user.getFavoriteOrders());
     	}
+    }
+    
+    public void editUserById(Long userId, User user) {
+    	User userToUpdate = userRepo.findById(userId).get();
+    	userToUpdate = user;
+    	userRepo.save(userToUpdate);
     }
 
 

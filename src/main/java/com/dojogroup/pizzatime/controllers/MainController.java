@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -123,7 +124,7 @@ public class MainController {
 			return "redirect:/";
 		} else {
 			model.addAttribute("userId", currentUserId);
-			model.addAttribute("favoriteOrders", userService.findUserById(currentUserId).getFavoriteOrders());
+			//model.addAttribute("favoriteOrders", userService.findUserById(currentUserId).getFavoriteOrders());
 			return "Home.jsp";
 	}}
 
@@ -175,6 +176,8 @@ public class MainController {
 			// get past orders and favorite orders
 			List<Order> pastOrders = userService.getAllOrdersByUser(id);
 			List<Order> favoriteOrders = userService.findUserById(id).getFavoriteOrders();
+			//System.out.println(userService.findUserById(currentUserId).getFirstName());
+			//System.out.println(favoriteOrders);
 			// remove the favorites from the order list to make displaying them on .jsp easier
 			for (Order order : favoriteOrders) {
 				pastOrders.remove(order);
@@ -187,8 +190,25 @@ public class MainController {
 		}
 	}
 	
-	//POST - Favorite an Order
-	@PostMapping("/favorite/{id}")
+	// PUT - Edit Account
+	@PutMapping("/editaccount/{id}")
+	public String editAccount(HttpSession session, 
+			@PathVariable("id") Long userId,
+			@Valid @ModelAttribute("user") User user,
+			BindingResult result) {
+		// get user from session, save them in the model and return requested page
+		// if no user, return to login
+		Long currentUserId = (Long) session.getAttribute("userId");
+		if (currentUserId == null) {
+			return "redirect:/";
+		} else {
+			userService.editUserById(currentUserId,user);
+			return "redirect:/account/"+currentUserId;
+		}
+	}
+	
+	//GET - Favorite an Order
+	@RequestMapping("/favorite/{id}")
 	public String favoriteAnOrder(@PathVariable("id") Long orderId, HttpSession session) {
 		// get user from session, save them in the model and return requested page
 		// if no user, return to login
@@ -196,9 +216,7 @@ public class MainController {
 		if (currentUserId == null) {
 			return "redirect:/";
 		} else {
-			User user = userService.findUserById(currentUserId);
-			Order order = oService.getOneOrder(currentUserId);
-			userService.favoriteOrderById(user,order);
+			userService.favoriteOrderById(currentUserId,orderId);
 			return "redirect:/account/" + currentUserId;
 		}
 	}
@@ -228,7 +246,57 @@ public class MainController {
 			return "redirect:/";
 		} else {
 			// add currentOrder to session
-			Order currentOrder = oService.createOrder(order); 
+			Order currentOrder = oService.createOrder(order);
+			session.setAttribute("currentOrder", currentOrder);
 			return "redirect:/checkout/"+currentOrder.getId();
 		}
+<<<<<<< HEAD
 	}}
+=======
+	}
+	
+	// GET - Checkout
+	@RequestMapping("/checkout/{id}")
+	public String checkoutPage(Model model, @PathVariable("id") Long orderId, HttpSession session) {
+		// get user from session, save them in the model and return requested page
+		// if no user, return to login
+		Long currentUserId = (Long) session.getAttribute("userId");
+		if (currentUserId == null) {
+			return "redirect:/";
+		} else {
+			Order currentOrder = (Order) session.getAttribute("currentOrder");
+			model.addAttribute("currentOrder", session.getAttribute("currentOrder"));
+			Double price = 9.99 + currentOrder.getToppings().size()*0.50;
+			model.addAttribute("price", price);
+			return "Checkout.jsp";
+		}
+	}
+	
+	@PostMapping("/purchase/{id}")
+	public String purchaseOrder(@PathVariable("id") Long id, HttpSession session) {
+		// get user from session, save them in the model and return requested page
+		// if no user, return to login
+		Long currentUserId = (Long) session.getAttribute("userId");
+		if (currentUserId == null) {
+			return "redirect:/";
+		} else {
+		session.removeAttribute("currentOrder");
+        return "redirect:/home";
+		}
+    }
+	
+	@DeleteMapping("/checkout/{id}/delete")
+    public String deleteOrder(@PathVariable("id") Long id, HttpSession session) {
+		// get user from session, save them in the model and return requested page
+		// if no user, return to login
+		Long currentUserId = (Long) session.getAttribute("userId");
+		if (currentUserId == null) {
+			return "redirect:/";
+		} else {
+		oService.deleteOrder(id);
+        session.removeAttribute("currentOrder");
+        return "redirect:/order";
+		}
+    }
+}
+>>>>>>> main
